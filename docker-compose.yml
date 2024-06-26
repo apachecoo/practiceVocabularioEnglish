@@ -1,0 +1,37 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.5
+    restart: always
+    working_dir: /app
+    volumes:
+      - ".:/var/www"
+      - "./mariadb/data:/var/lib/mysql"
+      - "./mariadb/logs:/var/log/mysql"
+      - "./mariadb/conf:/etc/mysql"
+      - "./src/database:/docker-entrypoint-initdb.d"
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=level2_employees
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=12345
+    ports:
+      - "127.0.0.16:3306:3306"
+    command: --init-file /docker-entrypoint-initdb.d/database.sql
+  server:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.16:80:80"
+    links:
+      - mariadb
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+  app:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www
+volumes:
+  mariadb_data:
