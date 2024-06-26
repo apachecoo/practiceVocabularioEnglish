@@ -4,7 +4,7 @@
 class VocabularyView
 {
 
-    public function index(array $categories=[],array $word=[], $success=[],$failures=[]): void
+    public function index(array $categories=[],array $word=[]): void
     {
 
         require_once './views/praticeVocabulary/index.php';

@@ -1,5 +1,6 @@
 <?php
 
+require_once 'helpers/helpers.php';
 require_once 'models/Category.php';
 require_once 'models/Vocabulary.php';
 require_once 'controllers/VocabularyController.php';
