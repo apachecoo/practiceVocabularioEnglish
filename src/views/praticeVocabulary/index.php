@@ -34,10 +34,10 @@
             </div>
         </form>
         <?php
-        print_r($word);
+
         if ($word) {
             ?>
-            <form action="controller=PracticeVocabularyController&action=index" method="post">
+            <form action="http://127.0.0.16/?controller=VocabularyController&action=index" method="post">
                 <div class="row">
                     <div class="col-6 text-center">
                         <div class="card" style="width: 100%;">
@@ -47,11 +47,14 @@
                                 </h5>
                                 <div class="mb-3">
                                     <input type="text" class="form-control" id="translation" name="translation"
-                                        placeholder="Traduce aqui">
+                                        placeholder="Traduce aqui" autocomplete="off">
                                     <input type="hidden" name="idVocabulary" value="<?= $word['id'] ?>">
                                     <input type="hidden" name="idCategory" value="<?= $word['idCategory'] ?>">
                                 </div>
                                 <button class="btn btn-success">Traducir</button>
+                                <a class="btn btn-primary" href="http://127.0.0.16?controller=VocabularyController&action=restart">
+                                    Reiniciar
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -62,7 +65,12 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Aciertos</h5>
                                         <div class="mb-3">
-                                            <h1>30</h1>
+                                            <h1>
+                                            <?php 
+                                            $success = getCookie(VocabularyController::NAME_COOKIE_SUCCESS); 
+                                            echo $success ? count($success):0;
+                                            ?>
+                                            </h1>
                                         </div>
                                     </div>
                                 </div>
@@ -72,21 +80,27 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Fallidos</h5>
                                         <div class="mb-3">
-                                            <h1>25</h1>
+                                            <h1>
+                                            <?php 
+                                            $failes = getCookie(VocabularyController::NAME_COOKIE_FAILED); 
+                                            echo $failes ? count($failes):0;
+                                            ?>
+
+                                            </h1>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
                 <pre>
-                              <?php
-                              //   $array_cookie = json_decode($_COOKIE[VocabularyController::NAME_COOKIE_SUCCESS], true);
-                              //   print_r($array_cookie)
-                              ?>  
-                            </pre>
+                                  <?php
+                                  //   $array_cookie = json_decode($_COOKIE[VocabularyController::NAME_COOKIE_SUCCESS], true);
+                                  //   print_r($array_cookie)
+                                  ?>  
+                                </pre>
             </form>
 
 

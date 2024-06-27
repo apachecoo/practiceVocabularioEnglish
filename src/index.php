@@ -7,9 +7,9 @@ require_once 'controllers/VocabularyController.php';
 require_once 'views/praticeVocabulary/VocabularyView.php';
 
 
-if (isset($_GET['controller']) && isset($_GET['action'])) {
-    $controller = $_GET['controller'];
-    $action = $_GET['action'];
+if (isset($_REQUEST['controller']) && isset($_REQUEST['action'])) {
+    $controller = $_REQUEST['controller'];
+    $action = $_REQUEST['action'];
 } else {
     $controller = 'VocabularyController';
     $action = 'index';
