@@ -12,8 +12,10 @@ class Vocabulary
 
     public static function initialize(): void
     {
-        self::$pdo = new PDO('mysql:host=mariadb;port=3306;dbname=vocabulary_english', 'user', '12345');
-        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if (!isset(self::$pdo)) {
+            self::$pdo = new PDO('mysql:host=mariadb;port=3306;dbname=vocabulary_english', 'user', '12345');
+            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        }
     }
 
     public static function all(): array
@@ -23,39 +25,48 @@ class Vocabulary
         return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Vocabulary');
     }
 
-
-    public static function find(int $id): Vocabulary|bool|null
+    public static function find(int $id): ?Vocabulary
     {
         self::initialize();
-        try {
-            $stmt = self::$pdo->prepare('SELECT * FROM ' . self::$table . ' WHERE id = :id');
-            $stmt->execute(array(':id' => $id));
-            if ($stmt->rowCount() === 0) {
-                return null;
-            }
-            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Vocabulary');
-            return $stmt->fetch() ?: null;
-        } catch (PDOException $e) {
-            echo "Error al ejecutar la consulta: " . $e->getMessage();
-            return false;
-        }
+        $stmt = self::$pdo->prepare('SELECT * FROM ' . self::$table . ' WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Vocabulary');
+        return $stmt->fetch() ?: null;
     }
 
-    public function getVocabularyByIdCategory(int $idCategory) {
+    public static function getVocabularyByIdCategory(int $idCategory, array $excludeIds = []): ?array
+    {
         self::initialize();
-        try {
-            $statement = self::$pdo->prepare('SELECT * FROM ' . self::$table . ' WHERE idCategory = :idCategory');
-            $statement->execute(array(':idCategory' => $idCategory));
-            if ($statement->rowCount() === 0) {
-                return null;
-            }
-            
-            return $statement->fetchAll(PDO::FETCH_ASSOC) ?: null;
-            
-            
-        } catch (PDOException $e) {
-            echo "Error al ejecutar la consulta: " . $e->getMessage();
-            return false;
+        
+        // Construir los marcadores de posición para los IDs a excluir
+        $placeholders = implode(',', array_fill(0, count($excludeIds), '?'));
+
+        // Construir la consulta SQL
+        $sql = 'SELECT * FROM ' . self::$table . ' WHERE idCategory = ?';
+        $params = [$idCategory];
+
+        if (!empty($excludeIds)) {
+            $sql .= ' AND id NOT IN (' . $placeholders . ')';
+            $params = array_merge($params, $excludeIds);
         }
+
+        // Preparar la consulta
+        $stmt = self::$pdo->prepare($sql);
+
+        // Ejecutar la consulta con los parámetros directamente
+        $stmt->execute($params);
+
+        // Devolver los resultados
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: null;
+    }
+    
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'idCategory' => $this->idCategory,
+            'name' => $this->name,
+            'translation' => $this->translation,
+        ];
     }
 }

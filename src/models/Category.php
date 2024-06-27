@@ -24,7 +24,7 @@ class Category
     }
 
 
-    public static function find(int $id): EmployeeModel|bool|null
+    public static function find(int $id): Category|bool|null
     {
         self::initialize();
         try {

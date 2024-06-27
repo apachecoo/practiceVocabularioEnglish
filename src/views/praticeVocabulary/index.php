@@ -11,37 +11,30 @@
 
 <body>
     <div class="container">
-
         <h1 class="text-center m-3">PRACTICE VOCABULARY</h1>
-        <form action="controller=PracticeVocabularyController&action=index">
+        <form action="?controller=VocabularyController&action=index" method="post">
             <div class="row">
                 <div class="col-3 mb-3">
-                    <select name="idCategory" class="form-select " aria-label="Default select example">
-                        <?php
-
-                        foreach ($categories as $key => $categorie) {
-                            ?>
+                    <select name="idCategory" class="form-select" aria-label="Default select example">
+                        <?php foreach ($categories as $key => $categorie) { ?>
                             <option value="<?= $categorie->id ?>"><?= $categorie->name ?></option>
-                            <?php
-                        }
-                        ?>
-
+                        <?php } ?>
                     </select>
                 </div>
                 <div class="col-3 mb-3">
-                    <button type="submit" class="btn btn-primary">Enviar</button>
+                    <button type="submit" class="btn btn-primary">Continuar</button>
                 </div>
             </div>
         </form>
-        <?php
 
-        if ($word) {
-            ?>
-            <form action="http://127.0.0.16/?controller=VocabularyController&action=index" method="post">
-                <div class="row">
-                    <div class="col-6 text-center">
-                        <div class="card" style="width: 100%;">
-                            <div class="card-body">
+
+        <form action="?controller=VocabularyController&action=index" method="post">
+            <div class="row">
+                <div class="col-6 text-center">
+                    <div class="card" style="width: 100%;">
+                        <div class="card-body">
+
+                            <?php if ($word) { ?>
                                 <h5 class="card-title">Traduce la siguiente palabra:
                                     <h2><?= strtoupper($word['name']) ?></h2>
                                 </h5>
@@ -52,65 +45,64 @@
                                     <input type="hidden" name="idCategory" value="<?= $word['idCategory'] ?>">
                                 </div>
                                 <button class="btn btn-success">Traducir</button>
-                                <a class="btn btn-primary" href="http://127.0.0.16?controller=VocabularyController&action=restart">
-                                    Reiniciar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 ">
-                        <div class="row">
-                            <div class="col text-success">
-                                <div class="card" style="width: 100%;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Aciertos</h5>
-                                        <div class="mb-3">
-                                            <h1>
-                                            <?php 
-                                            $success = getCookie(VocabularyController::NAME_COOKIE_SUCCESS); 
-                                            echo $success ? count($success):0;
-                                            ?>
-                                            </h1>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col text-danger">
-                                <div class="card" style="width: 100%;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Fallidos</h5>
-                                        <div class="mb-3">
-                                            <h1>
-                                            <?php 
-                                            $failes = getCookie(VocabularyController::NAME_COOKIE_FAILED); 
-                                            echo $failes ? count($failes):0;
-                                            ?>
+                                <a class="btn btn-primary"
+                                    href="?controller=VocabularyController&action=restart">Reiniciar</a>
+                            <?php } ?>
 
-                                            </h1>
-                                        </div>
-                                    </div>
+                            <?php if ($end) { ?>
+                                <div class="alert alert-success" role="alert">
+                                    <h4 class="alert-heading">Haz terminado la práctica! </h4>
+                                    <p>¡Bien hecho! Practicar es la clave para mejorar tu vocabulario en inglés. No importa
+                                        cuántos aciertos hayas tenido esta vez, cada intento es una oportunidad para
+                                        aprender más. ¿Listo para seguir practicando?</p>
+                                    <hr>
+                                    <p class="mb-0">Para volver a intentarlo oprime el botón reiniciar.</p>
                                 </div>
-                            </div>
-                        </div>
+                                <a class="btn btn-primary"
+                                    href="?controller=VocabularyController&action=restart">Reiniciar</a>
+                            <?php } ?>
 
+                        </div>
                     </div>
                 </div>
-                <pre>
-                                  <?php
-                                  //   $array_cookie = json_decode($_COOKIE[VocabularyController::NAME_COOKIE_SUCCESS], true);
-                                  //   print_r($array_cookie)
-                                  ?>  
-                                </pre>
-            </form>
-
-
-
-        <?php } ?>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col text-success">
+                            <div class="card" style="width: 100%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Aciertos</h5>
+                                    <div class="mb-3">
+                                        <h1>
+                                            <?php
+                                            $success = getCookie('success');
+                                            echo $success ? count($success) : 0;
+                                            ?>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col text-danger">
+                            <div class="card" style="width: 100%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Fallidos</h5>
+                                    <div class="mb-3">
+                                        <h1>
+                                            <?php
+                                            $failed = getCookie('failed');
+                                            echo $failed ? count($failed) : 0;
+                                            ?>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
 </body>
 
 </html>
