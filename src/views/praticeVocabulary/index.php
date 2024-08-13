@@ -29,7 +29,7 @@
 
 
         <form action="?controller=VocabularyController&action=index" method="post">
-            <div class="row">
+            <div class="row <?= isset($_REQUEST['idCategory']) ? 'show' : 'd-none' ?>">
                 <div class="col-6 text-center">
                     <div class="card" style="width: 100%;">
                         <div class="card-body">

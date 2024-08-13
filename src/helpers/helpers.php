@@ -18,8 +18,18 @@ function dump(mixed $mixed): void
 function getCookie(string $nameCookie): ?array
 {
     $valueCookie = null;
-    if (isset($_COOKIE[$nameCookie])) {
+    if (existsCookie($nameCookie)) {
         $valueCookie = json_decode($_COOKIE[$nameCookie], true);
     }
+    
     return $valueCookie;
+}
+
+function existsCookie(string $nameCookie): bool
+{
+    if (isset($_COOKIE[$nameCookie])) {
+        return true;
+    }
+
+    return false;
 }
