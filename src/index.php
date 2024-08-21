@@ -1,5 +1,5 @@
 <?php
-
+include_once 'database/Database.php';
 require_once 'helpers/helpers.php';
 require_once 'models/Category.php';
 require_once 'models/Vocabulary.php';
